@@ -1,5 +1,5 @@
-
 import { notFoundError, unauthorizedError } from "@/errors";
+import enrollmentRepository from "@/repositories/enrollment-repository";
 import { paymentsRepository } from "@/repositories/payments-repository";
 import TicketsRepository from "@/repositories/tickets-repository";
 import TicketsService from "../ticktes-service";
@@ -11,13 +11,15 @@ async function getPayment(ticketId: string): Promise<any> {
   return payment;
 } 
 
-async function postPayment(ticketId: number, cardIssuer: string, cardLastDigits: string): Promise<any> {
+async function postPayment(ticketId: number, cardIssuer: string, cardLastDigits: string, userId: number): Promise<any> {
   const myticket = await TicketsService.getTicket(ticketId);
-  if(!myticket)throw notFoundError;
+  if(!myticket) throw notFoundError();
   const ticket = await TicketsRepository.getTicketById(ticketId);
+  const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
+  if(ticket.enrollmentId != enrollment.id) throw unauthorizedError();
   const ticketType = await TicketsRepository.getTypeTicketById(ticket.ticketTypeId);
   const payment = await paymentsRepository.postPayment(ticket.id, cardIssuer, cardLastDigits, ticketType.price);
-  const updateTicket = await TicketsRepository.updateTicket(ticket.id); 
+  await TicketsRepository.updateTicket(ticket.id); 
   return payment;
 }
 
