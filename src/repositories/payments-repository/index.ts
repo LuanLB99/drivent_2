@@ -12,7 +12,7 @@ async function postPayment(ticketId: number, cardIssuer: string, cardLastDigits:
       ticketId: ticketId,
       value: price,
       cardIssuer: cardIssuer,
-      cardLastDigits: cardLastDigits.slice(10)
+      cardLastDigits: cardLastDigits.slice(11)
     }
   });
 }

@@ -22,19 +22,15 @@ export async function getPayments(req: AuthenticatedRequest, res: Response) {
     if(error.name === "UnauthorizedError") {
       return res.sendStatus(httpStatus.UNAUTHORIZED);
     }
-    return res.sendStatus(httpStatus.NOT_FOUND);
+    return res.sendStatus(httpStatus.UNAUTHORIZED);
   }
 }
 
 export async function postPayment(req: AuthenticatedRequest, res: Response) {
   const { ticketId, cardData } = req.body;
-
-  if(!ticketId || !cardData) return res.send(httpStatus.BAD_REQUEST);
+  if(!ticketId || !cardData) {return res.send(httpStatus.BAD_REQUEST);}
   try {
-    const ticket = await TicketsService.getTicket(ticketId);
-    if(!ticket) return res.sendStatus(httpStatus.NOT_FOUND);
-    const payment = await paymentsService.postPayment(ticket.id, cardData.cardIssuer, cardData.number);
-    console.log(payment);
+    const payment = await paymentsService.postPayment(ticketId, cardData.issuer, cardData.number);
     return res.status(httpStatus.OK).send(payment);
   } catch (error) {
     if (error.name === "NotFoundError") {
