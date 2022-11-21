@@ -2,13 +2,13 @@ import { notFoundError } from "@/errors";
 import enrollmentRepository from "@/repositories/enrollment-repository";
 import TicketsRepository from "@/repositories/tickets-repository";
 
-async function getTypeTickets(): Promise<any> {
+async function getTypeTickets() {
   const allTicketTypes = await TicketsRepository.getTypeTickets();
 
   return allTicketTypes;
 }
 
-async function getTickets(userId: number): Promise<any> {
+async function getTickets(userId: number) {
   const haveEnrollment = await enrollmentRepository.findWithAddressByUserId(userId);
   const tickets = await TicketsRepository.getTickets();
   const haveTicketType =  await TicketsRepository.getTypeTicketById(tickets[0].ticketTypeId);

@@ -1,6 +1,7 @@
 import { prisma } from "@/config";
+import { Payment } from "@/protocols";
 
-async function getPayment(ticketId: number): Promise<any> {
+async function getPayment(ticketId: number): Promise<Payment> {
   return prisma.payment.findFirst({
     where: { ticketId: ticketId }
   });

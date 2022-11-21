@@ -1,17 +1,18 @@
 import { notFoundError, unauthorizedError } from "@/errors";
+import { Payment } from "@/protocols";
 import enrollmentRepository from "@/repositories/enrollment-repository";
 import { paymentsRepository } from "@/repositories/payments-repository";
 import TicketsRepository from "@/repositories/tickets-repository";
 import TicketsService from "../ticktes-service";
 
-async function getPayment(ticketId: string): Promise<any> {
+async function getPayment(ticketId: string): Promise<Payment> {
   const payment =  await paymentsRepository.getPayment(Number(ticketId));
   const ticket = await TicketsRepository.getTicketById(payment.ticketId);
   if(!ticket) throw notFoundError();
   return payment;
 } 
 
-async function postPayment(ticketId: number, cardIssuer: string, cardLastDigits: string, userId: number): Promise<any> {
+async function postPayment(ticketId: number, cardIssuer: string, cardLastDigits: string, userId: number) {
   const myticket = await TicketsService.getTicket(ticketId);
   if(!myticket) throw notFoundError();
   const ticket = await TicketsRepository.getTicketById(ticketId);
